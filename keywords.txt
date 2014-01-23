@@ -1,0 +1,17 @@
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+TTBOUNCE	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+setActiveHigh	KEYWORD2
+setActiveLow	KEYWORD2
+enablePullup	KEYWORD2
+disablePullup	KEYWORD2
+setDebounceInterval	KEYWORD2
+update	KEYWORD2
+read	KEYWORD2
