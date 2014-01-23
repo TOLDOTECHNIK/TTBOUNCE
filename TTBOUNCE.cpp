@@ -10,7 +10,7 @@
 TTBOUNCE::TTBOUNCE(uint8_t pin){
   _pin = pin;
   pinMode(_pin, INPUT);
-  setActiveHIgh();
+  setActiveHigh();
   _debounceInterval = DEFAULT_DEBOUNCE_INTERVAL;
   _previousMillis = millis();
 }
