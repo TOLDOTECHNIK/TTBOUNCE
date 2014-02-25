@@ -4,6 +4,7 @@ This is a debouncing button library for Arduino.
 
 ## History
 2014-01-23 Initial release
+2014-02-25 added click/doubleclick/press and getHoldTime()
 
 ## Installation
 Download the ZIP file and extract it's content. Put the TTBOUNCE folder in "ARDUINOAPP/hardware/libraries/".
@@ -21,6 +22,7 @@ nothing
 ####Example
 TTBOUNCE switch = TTLED(5);
 
+
 ### setActiveHigh()
 When a switch is connected between a digital pin and VDD (5V) and the pin is pulled down over a resistor, the digital pin will be HIGH when the switch is pressed.
 You can activate this behaviour by calling the setActiveHigh(). ActiveHigh is the default operation mode.
@@ -35,6 +37,7 @@ nothing
 
 ####Example
 switch.setActiveHigh();
+
 
 ### setActiveLow()
 When a switch is connected between a digital pin and GND and the pin is pulled up over a resistor, the digital pin will be LOW when the switch is pressed.
@@ -51,8 +54,9 @@ nothing
 ####Example
 switch.setActiveLow();
 
+
 ### setDebounceInterval(unsigned int interval)
-Sets the time in which the debouncing happens. Default will be 10ms
+Sets the time in which the debouncing happens. Default: 10ms
 
 Take a higher interval if there is digital noise on the pin.
 
@@ -63,7 +67,50 @@ interval: Debouncing time in ms
 nothing
 
 ####Example
-switch.setDebounceInterval(200);
+switch.setDebounceInterval(50);
+
+
+### setClickInterval(unsigned int interval)
+Sets the time window in which a click can happen. Default: 300ms
+
+####Parameters
+interval: time in ms
+
+####Returns
+nothing
+
+####Example
+switch.setClickInterval(200);
+
+
+### setPressInterval(unsigned int interval)
+Sets the time window in which a long press can happen. Default: 1000ms
+
+####Parameters
+interval: time in ms
+
+####Returns
+nothing
+
+####Example
+switch.setPressInterval(500);
+
+
+### attachClick(callbackFunction function) | also applies to attachDoubleClick() and attachPress()
+Attaches a custom callback method.
+
+####Parameters
+function: method reference
+
+####Returns
+nothing
+
+####Example
+attachClick(click);
+
+void click(){
+	digitalWrite(13, HIGH);
+}
 
 ### enablePullup()
 Activates the internal pull up resistor on the digital pin.
@@ -77,6 +124,7 @@ nothing
 ####Example
 switch.enablePullup();
 
+
 ### disablePullup()
 Turns the internal pull up resistor off.
 
@@ -88,6 +136,7 @@ nothing
 
 ####Example
 switch.disablePullup();
+
 
 ### update()
 Be sure to call this method over and over again. Place it somewhere in your loop routine. This will update the debouncing method and also the switch state.
@@ -102,6 +151,7 @@ nothing
 void loop(){
 	switch.update();
 }
+
 
 ### read()
 This method will return the current switch status. HIGH if switch is pressed, LOW if switch is released.
@@ -119,3 +169,17 @@ if(switch.read() == HIGH){
 	//turn led on
 }
 
+
+### getHoldTime()
+This method will return the time in milliseconds since beginning of HIGH state.
+
+####Parameters
+none
+
+####Returns
+unsigned long (time in milliseconds)
+
+####Example
+if(switch.getHoldTime() > 2000){	
+	//turn led on
+}
