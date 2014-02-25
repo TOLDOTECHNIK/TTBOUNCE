@@ -40,11 +40,11 @@ void TTBOUNCE::setDebounceInterval(unsigned int interval){
   _debounceInterval = interval; 
 }
 
-void TTBOUNCE::setClickInterval(unsigned int interval) {
+void TTBOUNCE::setClickInterval(unsigned int interval){
   _clickInterval = interval;
 }
 
-void TTBOUNCE::setPressInterval(unsigned int interval) {
+void TTBOUNCE::setPressInterval(unsigned int interval){
   _pressInterval = interval;
 }
 
@@ -67,7 +67,7 @@ void TTBOUNCE::update(){
     _timestamp = millis();
   }
   else if(millis() - _timestamp >= _debounceInterval){
-    if (pinState != _currentPinState) {
+    if (pinState != _currentPinState){
       _currentPinState = pinState;
       if(read()){
         _previousHighStateTime = millis();
@@ -77,52 +77,40 @@ void TTBOUNCE::update(){
   _currentPinUnstableState = pinState;
   
   //states
-  if (_state == 0) { // waiting for menu pin being pressed.
-    if (read() == _activeHigh) {
-      _state = 1; // step to state 1
+  if (_state == 0){
+    if (read() == _activeHigh){
+      _state = 1;
       _timestamp = millis(); // remember starting time
-    } // if
-
+    }
   } 
-  else if (_state == 1) { // waiting for menu pin being released.
-    if (read() == !_activeHigh) {
-      _state = 2; // step to state 2
-
+  else if (_state == 1){
+    if (read() == !_activeHigh){
+      _state = 2;
     } 
-    else if ((read() == _activeHigh) && (millis() > _timestamp + _pressInterval)) {
+    else if ((read() == _activeHigh) && (millis() > _timestamp + _pressInterval)){
       if (_pressFunction) _pressFunction();
-      _state = 6; // step to state 6
-
-    } 
-    else {
-      // wait. Stay in this state.
-    } // if
-
+      _state = 4;
+    }  
   } 
-  else if (_state == 2) { // waiting for menu pin being pressed the second time or timeout.
-    if (millis() > _timestamp + _clickInterval) {
-      // this was only a single short click
+  else if (_state == 2){
+    if (millis() > _timestamp + _clickInterval){
       if (_clickFunction) _clickFunction();
-      _state = 0; // restart.
-
+      _state = 0;
     } 
-    else if (read() == _activeHigh) {
-      _state = 3; // step to state 3
-    } // if
-
+    else if (read() == _activeHigh){
+      _state = 3;
+    }
   } 
-  else if (_state == 3) { // waiting for menu pin being released finally.
-    if (read() == !_activeHigh) {
-      // this was a 2 click sequence.
+  else if (_state == 3){
+    if (read() == !_activeHigh){
       if (_doubleClickFunction) _doubleClickFunction();
-      _state = 0; // restart.
-    } // if
-
+      _state = 0;
+    }
   } 
-  else if (_state == 6) { // waiting for menu pin being release after long press.
-    if (read() == !_activeHigh) {
-      _state = 0; // restart.
-    } // if
+  else if (_state == 4){
+    if (read() == !_activeHigh){
+      _state = 0;
+    }
   }
 }
 
