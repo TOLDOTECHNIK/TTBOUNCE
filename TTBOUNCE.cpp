@@ -78,37 +78,37 @@ void TTBOUNCE::update(){
   
   //states
   if (_state == 0){
-    if (read() == _activeHigh){
+    if (read() == HIGH){
       _state = 1;
       _timestamp = millis(); // remember starting time
     }
   } 
   else if (_state == 1){
-    if (read() == !_activeHigh){
+    if (read() == LOW){
       _state = 2;
     } 
-    else if ((read() == _activeHigh) && (millis() > _timestamp + _pressInterval)){
+    else if ((read() == HIGH) && (millis() > _timestamp + _pressInterval)){
       if (_pressFunction) _pressFunction();
       _state = 4;
     }  
   } 
   else if (_state == 2){
-    if (millis() > _timestamp + _clickInterval){
+    if (millis() > _timestamp + _clickInterval || (read() == LOW && !_doubleClickFunction)){
       if (_clickFunction) _clickFunction();
       _state = 0;
     } 
-    else if (read() == _activeHigh){
+    else if (read() == HIGH){
       _state = 3;
     }
   } 
   else if (_state == 3){
-    if (read() == !_activeHigh){
+    if (read() == LOW){
       if (_doubleClickFunction) _doubleClickFunction();
       _state = 0;
     }
   } 
   else if (_state == 4){
-    if (read() == !_activeHigh){
+    if (read() == LOW){
       _state = 0;
     }
   }
