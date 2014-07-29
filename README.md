@@ -20,7 +20,7 @@ pin: the number of the pin which is attached to the button/switch
 nothing
 
 ####Example
-TTBOUNCE switch = TTLED(5);
+TTBOUNCE switch = TTBOUNCE(5);
 
 
 ### setActiveHigh()
