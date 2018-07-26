@@ -5,6 +5,7 @@ This is a debouncing button library for Arduino.
 ## History
 - 2014-01-23 Initial release
 - 2014-02-25 added click/doubleclick/press and getHoldTime()
+- 2018-07-26 added attachReTick() for continous button press (usable for counting up and down)
 
 ## Installation
 Download the ZIP file and extract it's content. Put the TTBOUNCE folder in "ARDUINOAPP/hardware/libraries/".
@@ -89,7 +90,7 @@ switch.setClickInterval(200);
 ```
 
 ### setPressInterval(unsigned int interval)
-Sets the time window in which a long press can happen. Default: 1000ms
+Sets the time after which a long press is detected. Default: 1000ms
 
 #### Parameters
 interval: time in ms
@@ -102,7 +103,21 @@ nothing
 switch.setPressInterval(500);
 ```
 
-### attachClick(callbackFunction function) | also applies to attachDoubleClick() and attachPress()
+### setReTickInterval(unsigned int interval)
+Sets the time after which a retick is fired as long as the button is pressed. Default: 200ms
+
+#### Parameters
+interval: time in ms
+
+#### Returns
+nothing
+
+#### Example
+```cpp
+switch.setReTickInterval(100);
+```
+
+### attachClick(callbackFunction function) | also applies to attachDoubleClick(), attachPress() and attachReTick()
 Attaches a custom callback method.
 
 #### Parameters
@@ -113,10 +128,20 @@ nothing
 
 #### Example
 ```cpp
-attachClick(click);
+switch.attachClick(click);
+switch.attachDoubleClick(doubleClick);
+switch.attachReTick(reTick);
 
 void click(){
 	digitalWrite(13, HIGH);
+}
+
+void doubleClick(){
+	//do something here
+}
+
+void reTick(){
+	//do something here
 }
 ```
 

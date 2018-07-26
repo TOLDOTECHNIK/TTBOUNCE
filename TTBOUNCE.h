@@ -10,6 +10,7 @@
 #define DEFAULT_DEBOUNCE_INTERVAL  10
 #define DEFAULT_CLICK_INTERVAL 300
 #define DEFAULT_PRESS_INTERVAL 1000
+#define DEFAULT_RETICK_INTERVAL 200
 
 extern "C" {
   typedef void (*callbackFunction)(void);
@@ -25,9 +26,11 @@ public:
   void setDebounceInterval(unsigned int interval);
   void setPressInterval(unsigned int interval);
   void setClickInterval(unsigned int interval);
+  void setReTickInterval(unsigned int interval);
   void attachClick(callbackFunction function);
   void attachDoubleClick(callbackFunction function);
   void attachPress(callbackFunction function);
+  void attachReTick(callbackFunction function);
   void update(); 
   uint8_t read();
   unsigned long getHoldTime();
@@ -42,12 +45,15 @@ private:
   callbackFunction _clickFunction;
   callbackFunction _doubleClickFunction;
   callbackFunction _pressFunction;
+  callbackFunction _reTickFunction;
 
   unsigned long _timestamp;
   unsigned int _debounceInterval;
   unsigned int _clickInterval;
   unsigned int _pressInterval;
+  unsigned int _reTickInterval;
   unsigned long _previousHighStateTime;
+  unsigned long _previousReTickTime;
 };
 
 #endif
