@@ -86,12 +86,14 @@ void TTBOUNCE::update() {
   _currentPinUnstableState = pinState;
 
   // states
-  if (_state == 0) {
+  switch (_state) {
+  case 0:
     if (read() == HIGH) {
       _state     = 1;
       _timestamp = millis();    // remember starting time
     }
-  } else if (_state == 1) {
+    break;
+  case 1:
     if (read() == LOW) {
       _state = 2;
     } else if ((read() == HIGH) && (millis() > _timestamp + _pressInterval)) {
@@ -99,7 +101,8 @@ void TTBOUNCE::update() {
         _pressFunction();
       _state = 4;
     }
-  } else if (_state == 2) {
+    break;
+  case 2:
     if (millis() > _timestamp + _clickInterval ||
         (read() == LOW && !_doubleClickFunction)) {
       if (_clickFunction)
@@ -108,13 +111,15 @@ void TTBOUNCE::update() {
     } else if (read() == HIGH) {
       _state = 3;
     }
-  } else if (_state == 3) {
+    break;
+  case 3:
     if (read() == LOW) {
       if (_doubleClickFunction)
         _doubleClickFunction();
       _state = 0;
     }
-  } else if (_state == 4) {
+    break;
+  case 4:
     if (read() == LOW) {
       _state = 0;
     } else {
@@ -125,6 +130,7 @@ void TTBOUNCE::update() {
         }
       }
     }
+    break;
   }
 }
 
