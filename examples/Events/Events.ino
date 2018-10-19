@@ -16,6 +16,8 @@ void setup(){
   b.setReTickInterval(100);         //a retick is fired as long the button is pressed (after press interval is lapsed) (default is 200ms)
   b.attachReTick(reTick);           //attach the retick method to the retick event
 
+  b.attachRelease(release);         //attach the release method to the release event (fired when button is released after click/press)
+
   Serial.begin(9600);
 }
 
@@ -45,4 +47,8 @@ void press(){
 
 void reTick(){
   Serial.println("Reticked");
+}
+
+void release(){
+  Serial.println("Button released");
 }

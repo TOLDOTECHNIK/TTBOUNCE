@@ -6,6 +6,7 @@ This is a debouncing button library for Arduino.
 - 2014-01-23 Initial release
 - 2014-02-25 added click/doubleclick/press and getHoldTime()
 - 2018-07-26 added attachReTick() for continous button press (usable for counting up and down)
+- 2018-10-19 added attachRelease() for notification when button is released (Thanks to DaveDischord)
 
 ## Installation
 Download the ZIP file and extract it's content. Put the TTBOUNCE folder in "ARDUINOAPP/hardware/libraries/".
@@ -117,7 +118,7 @@ nothing
 switch.setReTickInterval(100);
 ```
 
-### attachClick(callbackFunction function) | also applies to attachDoubleClick(), attachPress() and attachReTick()
+### attachClick(callbackFunction function) | also applies to attachDoubleClick(), attachPress(), attachReTick() and attachRelease()
 Attaches a custom callback method.
 
 #### Parameters
@@ -131,6 +132,7 @@ nothing
 switch.attachClick(click);
 switch.attachDoubleClick(doubleClick);
 switch.attachReTick(reTick);
+switch.attachRelease(release);
 
 void click(){
 	digitalWrite(13, HIGH);
@@ -141,6 +143,10 @@ void doubleClick(){
 }
 
 void reTick(){
+	//do something here
+}
+
+void release(){
 	//do something here
 }
 ```

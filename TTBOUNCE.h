@@ -30,6 +30,7 @@ public:
   void attachClick(callbackFunction function);
   void attachDoubleClick(callbackFunction function);
   void attachPress(callbackFunction function);
+  void attachRelease(callbackFunction function);
   void attachReTick(callbackFunction function);
   void update(); 
   uint8_t read();
@@ -45,6 +46,7 @@ private:
   callbackFunction _clickFunction;
   callbackFunction _doubleClickFunction;
   callbackFunction _pressFunction;
+  callbackFunction _releaseFunction;
   callbackFunction _reTickFunction;
 
   unsigned long _timestamp;

@@ -3,6 +3,7 @@
  * Version 1.0 January, 2014
  * Version 1.1 February, 2014
  * Version 1.2 July, 2018
+ * Version 1.3 October, 2018
  * Copyright 2009 TOLDO TECHNIK
  * For details, see https://github.com/TOLDOTECHNIK/TTLED
  */
@@ -66,6 +67,10 @@ void TTBOUNCE::attachPress(callbackFunction function) {
   _pressFunction = function;
 }
 
+void TTBOUNCE::attachRelease(callbackFunction function) {
+  _releaseFunction = function;
+}
+
 void TTBOUNCE::attachReTick(callbackFunction function) {
   _reTickFunction = function;
 }
@@ -121,6 +126,8 @@ void TTBOUNCE::update() {
     break;
   case 4:
     if (read() == LOW) {
+	  if (_releaseFunction)
+        _releaseFunction();
       _state = 0;
     } else {
       if (_reTickFunction) {

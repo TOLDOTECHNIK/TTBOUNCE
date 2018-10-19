@@ -18,6 +18,7 @@ setClickInterval	KEYWORD2
 attachClick	KEYWORD2
 attachDoubleClick	KEYWORD2
 attachPress	KEYWORD2
+attachRelease	KEYWORD2
 update	KEYWORD2
 read	KEYWORD2
 getHoldTime	KEYWORD2
