@@ -7,10 +7,11 @@
 #include <Wprogram.h>
 #endif
 
-#define DEFAULT_DEBOUNCE_INTERVAL  10
-#define DEFAULT_CLICK_INTERVAL 300
-#define DEFAULT_PRESS_INTERVAL 1000
-#define DEFAULT_RETICK_INTERVAL 200
+#define TTBOUNCE_DEFAULT_DEBOUNCE_INTERVAL  10
+#define TTBOUNCE_DEFAULT_CLICK_INTERVAL     300
+#define TTBOUNCE_DEFAULT_PRESS_INTERVAL     1000
+#define TTBOUNCE_DEFAULT_RETICK_INTERVAL    200
+#define TTBOUNCE_WITHOUT_PIN                255
 
 extern "C" {
   typedef void (*callbackFunction)(void);
@@ -32,12 +33,13 @@ public:
   void attachPress(callbackFunction function);
   void attachRelease(callbackFunction function);
   void attachReTick(callbackFunction function);
-  void update(); 
+  void update(boolean virtualPinState = 0);
   uint8_t read();
   unsigned long getHoldTime();
 
 private:
   uint8_t _pin;
+  uint8_t _useWithHardwarePin;
   uint8_t _activeHigh;
   uint8_t _state;
   uint8_t _currentPinState;

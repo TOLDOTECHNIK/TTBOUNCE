@@ -4,20 +4,24 @@
  * Version 1.1 February, 2014
  * Version 1.2 July, 2018
  * Version 1.3 October, 2018
+ * Version 1.4 January, 2020
  * Copyright 2009 TOLDO TECHNIK
- * For details, see https://github.com/TOLDOTECHNIK/TTLED
+ * For details, see https://github.com/TOLDOTECHNIK/TTBOUNCE
  */
 
 #include "TTBOUNCE.h"
 
 TTBOUNCE::TTBOUNCE(uint8_t pin) {
-  _pin = pin;
-  pinMode(_pin, INPUT);
+  _useWithHardwarePin = pin < TTBOUNCE_WITHOUT_PIN ? true : false;
+  if (_useWithHardwarePin) {
+    _pin = pin;
+    pinMode(_pin, INPUT);
+  }
   setActiveHigh();
-  _debounceInterval = DEFAULT_DEBOUNCE_INTERVAL;
-  _clickInterval    = DEFAULT_CLICK_INTERVAL;
-  _pressInterval    = DEFAULT_PRESS_INTERVAL;
-  _reTickInterval   = DEFAULT_RETICK_INTERVAL;
+  _debounceInterval = TTBOUNCE_DEFAULT_DEBOUNCE_INTERVAL;
+  _clickInterval    = TTBOUNCE_DEFAULT_CLICK_INTERVAL;
+  _pressInterval    = TTBOUNCE_DEFAULT_PRESS_INTERVAL;
+  _reTickInterval   = TTBOUNCE_DEFAULT_RETICK_INTERVAL;
   _timestamp        = millis();
 }
 
@@ -32,11 +36,15 @@ void TTBOUNCE::setActiveLow() {
 }
 
 void TTBOUNCE::enablePullup() {
-  digitalWrite(_pin, HIGH);
+  if (_useWithHardwarePin) {
+    digitalWrite(_pin, HIGH);
+  }
 }
 
 void TTBOUNCE::disablePullup() {
-  digitalWrite(_pin, LOW);
+  if (_useWithHardwarePin) {
+    digitalWrite(_pin, LOW);
+  }
 }
 
 void TTBOUNCE::setDebounceInterval(unsigned int interval) {
@@ -75,8 +83,12 @@ void TTBOUNCE::attachReTick(callbackFunction function) {
   _reTickFunction = function;
 }
 
-void TTBOUNCE::update() {
-  uint8_t pinState = digitalRead(_pin);
+void TTBOUNCE::update(boolean virtualPinState) {
+  uint8_t pinState = virtualPinState;
+  if (_useWithHardwarePin) {
+    pinState = digitalRead(_pin);
+  }
+
   // debounce
   if (pinState != _currentPinUnstableState) {
     _timestamp = millis();
@@ -92,52 +104,52 @@ void TTBOUNCE::update() {
 
   // states
   switch (_state) {
-  case 0:
-    if (read() == HIGH) {
-      _state     = 1;
-      _timestamp = millis();    // remember starting time
-    }
-    break;
-  case 1:
-    if (read() == LOW) {
-      _state = 2;
-    } else if ((read() == HIGH) && (millis() > _timestamp + _pressInterval)) {
-      if (_pressFunction)
-        _pressFunction();
-      _state = 4;
-    }
-    break;
-  case 2:
-    if (millis() > _timestamp + _clickInterval ||
-        (read() == LOW && !_doubleClickFunction)) {
-      if (_clickFunction)
-        _clickFunction();
-      _state = 0;
-    } else if (read() == HIGH) {
-      _state = 3;
-    }
-    break;
-  case 3:
-    if (read() == LOW) {
-      if (_doubleClickFunction)
-        _doubleClickFunction();
-      _state = 0;
-    }
-    break;
-  case 4:
-    if (read() == LOW) {
-	  if (_releaseFunction)
-        _releaseFunction();
-      _state = 0;
-    } else {
-      if (_reTickFunction) {
-        if (millis() - _previousReTickTime > _reTickInterval) {
-          _reTickFunction();
-          _previousReTickTime = millis();
+    case 0:
+      if (read() == HIGH) {
+        _state     = 1;
+        _timestamp = millis();    // remember starting time
+      }
+      break;
+    case 1:
+      if (read() == LOW) {
+        _state = 2;
+      } else if ((read() == HIGH) && (millis() > _timestamp + _pressInterval)) {
+        if (_pressFunction)
+          _pressFunction();
+        _state = 4;
+      }
+      break;
+    case 2:
+      if (millis() > _timestamp + _clickInterval ||
+          (read() == LOW && !_doubleClickFunction)) {
+        if (_clickFunction)
+          _clickFunction();
+        _state = 0;
+      } else if (read() == HIGH) {
+        _state = 3;
+      }
+      break;
+    case 3:
+      if (read() == LOW) {
+        if (_doubleClickFunction)
+          _doubleClickFunction();
+        _state = 0;
+      }
+      break;
+    case 4:
+      if (read() == LOW) {
+        if (_releaseFunction)
+          _releaseFunction();
+        _state = 0;
+      } else {
+        if (_reTickFunction) {
+          if (millis() - _previousReTickTime > _reTickInterval) {
+            _reTickFunction();
+            _previousReTickTime = millis();
+          }
         }
       }
-    }
-    break;
+      break;
   }
 }
 

@@ -7,6 +7,7 @@ This is a debouncing button library for Arduino.
 - 2014-02-25 added click/doubleclick/press and getHoldTime()
 - 2018-07-26 added attachReTick() for continous button press (usable for counting up and down)
 - 2018-10-19 added attachRelease() for notification when button is released (Thanks to DaveDischord)
+- 2020-01-02 Can now be used without hardware pin. Write the "virtual" pin state by calling the update(pinState) method and let the library do the rest. This comes handy if you're using sensors (e.g. 3D magnet sensors like the TLE493D)
 
 ## Installation
 Download the ZIP file and extract it's content. Put the TTBOUNCE folder in "ARDUINOAPP/hardware/libraries/".
@@ -18,12 +19,18 @@ In the Arduino IDE you can test the sample sketches under Samples->TTBOUNCE.
 #### Parameters
 pin: the number of the pin which is attached to the button/switch
 
+If using in virtual mode without hardware pin: TTBOUNCE_WITHOUT_PIN
+
 #### Returns
 nothing
 
 #### Example
 ```cpp
 TTBOUNCE switch = TTBOUNCE(5);
+```
+Or without using hardware pin:
+```cpp
+TTBOUNCE switch = TTBOUNCE(TTBOUNCE_WITHOUT_PIN);
 ```
 
 ### setActiveHigh()
@@ -192,6 +199,13 @@ nothing
 ```cpp
 void loop(){
 	switch.update();
+}
+```
+with external "virtual" pin state:
+```cpp
+void loop(){
+	uint8_t pinState = readFromSensor();
+	switch.update(pinState);
 }
 ```
 
