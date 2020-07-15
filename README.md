@@ -1,6 +1,6 @@
 # TTBOUNCE
 
-This is a debouncing button library for Arduino.
+This is a debouncing button library for Arduino providing click, double click, long press, retick and release events.
 
 ## History
 - 2014-01-23 Initial release
