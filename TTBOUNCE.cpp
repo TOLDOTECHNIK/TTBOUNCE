@@ -18,11 +18,13 @@ TTBOUNCE::TTBOUNCE(uint8_t pin) {
     pinMode(_pin, INPUT);
   }
   setActiveHigh();
-  _debounceInterval = TTBOUNCE_DEFAULT_DEBOUNCE_INTERVAL;
-  _clickInterval    = TTBOUNCE_DEFAULT_CLICK_INTERVAL;
-  _pressInterval    = TTBOUNCE_DEFAULT_PRESS_INTERVAL;
-  _reTickInterval   = TTBOUNCE_DEFAULT_RETICK_INTERVAL;
-  _timestamp        = millis();
+  _doubleClickEventEnabled  = false;
+  _debounceInterval         = TTBOUNCE_DEFAULT_DEBOUNCE_INTERVAL;
+  _clickInterval            = TTBOUNCE_DEFAULT_CLICK_INTERVAL;
+  _pressInterval            = TTBOUNCE_DEFAULT_PRESS_INTERVAL;
+  _reTickInterval           = TTBOUNCE_DEFAULT_RETICK_INTERVAL;
+  _lastDetectedEvent        = NONE;
+  _timestamp                = millis();
 }
 
 void TTBOUNCE::setActiveHigh() {
@@ -71,6 +73,14 @@ void TTBOUNCE::attachDoubleClick(callbackFunction function) {
   _doubleClickFunction = function;
 }
 
+void TTBOUNCE::enableDoubleClickEvent() {
+  _doubleClickEventEnabled = true;
+}
+
+void TTBOUNCE::disableDoubleClickEvent() {
+  _doubleClickEventEnabled = false;
+}
+
 void TTBOUNCE::attachPress(callbackFunction function) {
   _pressFunction = function;
 }
@@ -114,16 +124,20 @@ void TTBOUNCE::update(boolean virtualPinState) {
       if (read() == LOW) {
         _state = 2;
       } else if ((read() == HIGH) && (millis() > _timestamp + _pressInterval)) {
-        if (_pressFunction)
+        _lastDetectedEvent = PRESS;
+        if (_pressFunction) {
           _pressFunction();
+        }
         _state = 4;
       }
       break;
     case 2:
       if (millis() > _timestamp + _clickInterval ||
-          (read() == LOW && !_doubleClickFunction)) {
-        if (_clickFunction)
+          (read() == LOW && (!_doubleClickFunction && !_doubleClickEventEnabled))) {
+        _lastDetectedEvent = CLICK;
+        if (_clickFunction) {
           _clickFunction();
+        }
         _state = 0;
       } else if (read() == HIGH) {
         _state = 3;
@@ -131,15 +145,18 @@ void TTBOUNCE::update(boolean virtualPinState) {
       break;
     case 3:
       if (read() == LOW) {
-        if (_doubleClickFunction)
+        _lastDetectedEvent = DOUBLE_CLICK;
+        if (_doubleClickFunction) {
           _doubleClickFunction();
+        }
         _state = 0;
       }
       break;
     case 4:
       if (read() == LOW) {
-        if (_releaseFunction)
+        if (_releaseFunction) {
           _releaseFunction();
+        }
         _state = 0;
       } else {
         if (_reTickFunction) {
@@ -167,4 +184,10 @@ unsigned long TTBOUNCE::getHoldTime() {
   } else {
     return 0;
   }
+}
+
+event_type_t TTBOUNCE::getLastDetectedEvent() {
+  event_type_t e = _lastDetectedEvent;
+  _lastDetectedEvent = NONE;
+  return e;
 }

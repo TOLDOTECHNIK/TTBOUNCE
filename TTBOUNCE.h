@@ -17,6 +17,13 @@ extern "C" {
   typedef void (*callbackFunction)(void);
 }
 
+typedef enum {
+    NONE = 0,
+    CLICK,
+    DOUBLE_CLICK,
+    PRESS,
+} event_type_t;
+
 class TTBOUNCE{
 public:
   TTBOUNCE(uint8_t pin); 
@@ -30,12 +37,15 @@ public:
   void setReTickInterval(unsigned int interval);
   void attachClick(callbackFunction function);
   void attachDoubleClick(callbackFunction function);
+  void enableDoubleClickEvent();
+  void disableDoubleClickEvent();
   void attachPress(callbackFunction function);
   void attachRelease(callbackFunction function);
   void attachReTick(callbackFunction function);
   void update(boolean virtualPinState = 0);
   uint8_t read();
   unsigned long getHoldTime();
+  event_type_t getLastDetectedEvent();
 
 private:
   uint8_t _pin;
@@ -44,12 +54,15 @@ private:
   uint8_t _state;
   uint8_t _currentPinState;
   uint8_t _currentPinUnstableState;
+  event_type_t _lastDetectedEvent;
   
   callbackFunction _clickFunction;
   callbackFunction _doubleClickFunction;
   callbackFunction _pressFunction;
   callbackFunction _releaseFunction;
   callbackFunction _reTickFunction;
+
+  bool _doubleClickEventEnabled;
 
   unsigned long _timestamp;
   unsigned int _debounceInterval;

@@ -8,6 +8,7 @@ This is a debouncing button library for Arduino providing click, double click, l
 - 2018-07-26 added attachReTick() for continous button press (usable for counting up and down)
 - 2018-10-19 added attachRelease() for notification when button is released (Thanks to DaveDischord)
 - 2020-01-02 Can now be used without hardware pin. Write the "virtual" pin state by calling the update(pinState) method and let the library do the rest. This comes handy if you're using sensors (e.g. 3D magnet sensors like the TLE493D)
+- 2022-02-17 added getLastDetectedEvent() and enable/disableDoubleClickEvent() for polling events (if event methods (e.g. attachClick) are not used)
 
 ## Installation
 Download the ZIP file and extract it's content. Put the TTBOUNCE folder in "ARDUINOAPP/hardware/libraries/".
@@ -158,6 +159,17 @@ void release(){
 }
 ```
 
+### enableDoubleClickEvent() / disableDoubleClickEvent
+By default the double click detection is disabled. The reason why is that when enabled the single click gets delayed because a double click needs some time to be detected.
+
+This methods are only needed when event pulling is used. Double click detection are automatically enabled when `ttachDoubleClick()` got called.
+
+#### Parameters
+none
+
+#### Returns
+nothing
+
 ### enablePullup()
 Activates the internal pull up resistor on the digital pin.
 
@@ -240,5 +252,23 @@ unsigned long (time in milliseconds)
 ```cpp
 if(switch.getHoldTime() > 2000){	
 	//turn led on
+}
+```
+
+### getLastDetectedEvent()
+This method will return the last seen event (click, double click or press). After calling this function the last detected event is reset to `NONE`, so a detected event can only be read once.
+
+Ensure to call `enableDoubleClickEvent()` when double clicks should also be detected.
+
+#### Parameters
+none
+
+#### Returns
+event_type_t (`NONE`, `CLICK`, `DOUBLE_CLICK` or `PRESS`)
+
+#### Example
+```cpp
+if(switch.getLastDetectedEvent == CLICK){	
+	Serial.print("a click was detected");
 }
 ```
