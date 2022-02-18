@@ -5,7 +5,7 @@
  * Version 1.2 July, 2018
  * Version 1.3 October, 2018
  * Version 1.4 January, 2020
- * Version 1.5 February, 2022
+ * Version 1.5.1 February, 2022
  * For details, see https://github.com/TOLDOTECHNIK/TTBOUNCE
  */
 
@@ -102,7 +102,8 @@ void TTBOUNCE::update(boolean virtualPinState) {
   // debounce
   if (pinState != _currentPinUnstableState) {
     _timestamp = millis();
-  } else if (millis() - _timestamp >= _debounceInterval) {
+  }
+  else if (millis() > (_timestamp + _debounceInterval)) {
     if (pinState != _currentPinState) {
       _currentPinState = pinState;
       if (read()) {
@@ -123,7 +124,7 @@ void TTBOUNCE::update(boolean virtualPinState) {
     case 1:
       if (read() == LOW) {
         _state = 2;
-      } else if ((read() == HIGH) && (millis() > _timestamp + _pressInterval)) {
+      } else if ((read() == HIGH) && (millis() > (_timestamp + _pressInterval))) {
         _lastDetectedEvent = PRESS;
         if (_pressFunction) {
           _pressFunction();
@@ -132,7 +133,7 @@ void TTBOUNCE::update(boolean virtualPinState) {
       }
       break;
     case 2:
-      if (millis() > _timestamp + _clickInterval ||
+      if (millis() > (_timestamp + _clickInterval) ||
           (read() == LOW && (!_doubleClickFunction && !_doubleClickEventEnabled))) {
         _lastDetectedEvent = CLICK;
         if (_clickFunction) {
@@ -151,6 +152,11 @@ void TTBOUNCE::update(boolean virtualPinState) {
         }
         _state = 0;
       }
+      else {
+        if (millis() > (_timestamp + _clickInterval)) {
+          _state = 255;
+        }
+      }
       break;
     case 4:
       if (read() == LOW) {
@@ -165,6 +171,11 @@ void TTBOUNCE::update(boolean virtualPinState) {
             _previousReTickTime = millis();
           }
         }
+      }
+      break;
+    default:
+      if (read() == LOW) {
+        _state = 0;
       }
       break;
   }

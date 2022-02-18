@@ -9,6 +9,7 @@ This is a debouncing button library for Arduino providing click, double click, l
 - 2018-10-19 added attachRelease() for notification when button is released (Thanks to DaveDischord)
 - 2020-01-02 Can now be used without hardware pin. Write the "virtual" pin state by calling the update(pinState) method and let the library do the rest. This comes handy if you're using sensors (e.g. 3D magnet sensors like the TLE493D)
 - 2022-02-17 added getLastDetectedEvent() and enable/disableDoubleClickEvent() for polling events (if event methods (e.g. attachClick) are not used)
+- 2022-02-18 fixed a bug in the double click logik
 
 ## Installation
 Download the ZIP file and extract it's content. Put the TTBOUNCE folder in "ARDUINOAPP/hardware/libraries/".
