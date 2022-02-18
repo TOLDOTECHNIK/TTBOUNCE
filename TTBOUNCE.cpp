@@ -5,7 +5,7 @@
  * Version 1.2 July, 2018
  * Version 1.3 October, 2018
  * Version 1.4 January, 2020
- * Copyright 2009 TOLDO TECHNIK
+ * Version 1.5 February, 2022
  * For details, see https://github.com/TOLDOTECHNIK/TTBOUNCE
  */
 
